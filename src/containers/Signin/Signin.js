@@ -91,6 +91,11 @@ const Signin = props => {
           errorMessage: '登入失敗'
         });
       }
+    } else {
+      dispatchHttpStatus({
+        type: 'ERROR',
+        errorMessage: '登入失敗'
+      });
     }
 
     dispatchHttpStatus({ type: 'RESPONSE' });
@@ -152,7 +157,6 @@ const Signin = props => {
           <div className={styles.btns}>
             <Button clicked={() => signinHandler(signinFormData)}>送出</Button>
             <Button clicked={() => props.history.push('/signup')}>註冊</Button>
-            <p>test</p>
           </div>
         </Card>
       </div>
