@@ -1,0 +1,31 @@
+@import '../../assets/scss/var.scss';
+.Button {
+  font: inherit;
+  background-color: transparent;
+  padding: 5px 16px;
+  color: $light;
+  border-radius: 0;
+  border: none;
+  cursor: pointer;
+  border: 3px solid $light;
+  white-space: nowrap;
+}
+
+.Button:hover,
+.Button:active {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.26);
+}
+
+.Button:active {
+  background-color: $light;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.Button:focus {
+  outline: none;
+}
+
+.Button:disabled {
+  cursor: not-allowed;
+}

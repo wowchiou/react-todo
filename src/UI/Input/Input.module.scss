@@ -1,0 +1,42 @@
+@import '../../assets/scss/var.scss';
+.Input {
+  display: block;
+  width: 100%;
+  font-size: 20px;
+  appearance: none;
+  border: 3px solid lighten($light, 30);
+  color: $light;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  border-radius: 0;
+  background-color: rgba(255, 255, 255, 0);
+  &.error {
+    border: 3px solid lighten($danger, 10);
+  }
+}
+.Input:not(:first-child) {
+  margin-top: 12px;
+}
+.Input:focus {
+  outline: none;
+  border: 3px solid $light;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: $info;
+}
+
+/*webkit瀏覽器專用*/
+::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.8);
+}
+/*Firefox 4-18瀏覽器專用*/
+input::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.8);
+}
+/*Firefox 19+瀏覽器專用*/
+input::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.8);
+}
+/*IE10瀏覽器專用*/
+:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.8);
+}

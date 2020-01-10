@@ -1,0 +1,17 @@
+@import './assets/scss/var.scss';
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC:100,300,400,500,700,900&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  margin: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  @extend %blueGrediantBackground;
+}

@@ -1,0 +1,25 @@
+@import '../../assets/scss/var.scss';
+
+.error {
+  background-color: $danger;
+  color: $light;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 5px 20px;
+  align-items: center;
+  border-bottom: 3px solid $light;
+  transition: 0.3s;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
+.show {
+  transform: translate(0, 0);
+}
+
+.hide {
+  transform: translate(0, -100vh);
+}

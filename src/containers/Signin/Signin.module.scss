@@ -1,0 +1,45 @@
+@import '../../assets/scss/var.scss';
+
+.Signin {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+.wrap {
+  width: 100%;
+  max-width: 500px;
+  margin: 50px auto;
+}
+.title {
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: $light;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  .loading {
+    width: 20px;
+    margin-left: 10px;
+  }
+}
+.btns {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  button {
+    &:nth-child(2) {
+      border: none;
+      &:hover {
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+.popup {
+  text-align: center;
+  margin-top: 30px;
+}
