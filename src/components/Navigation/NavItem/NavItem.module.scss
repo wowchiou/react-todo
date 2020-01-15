@@ -1,0 +1,15 @@
+.NavItem {
+  border: 3px solid #fff;
+  a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 900;
+    padding: 5px 10px;
+  }
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}

@@ -16,7 +16,7 @@ const App = () => {
         )}
         <Route path="/signup" component={Signup} />
         <Route path="/signin" component={Signin} />
-        <Redirect to="/signin" />
+        <Redirect to="/" />
       </Switch>
 
       <div id="global-modal"></div>

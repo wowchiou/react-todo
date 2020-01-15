@@ -91,11 +91,6 @@ const Signin = props => {
           errorMessage: '登入失敗'
         });
       }
-    } else {
-      dispatchHttpStatus({
-        type: 'ERROR',
-        errorMessage: '登入失敗'
-      });
     }
 
     dispatchHttpStatus({ type: 'RESPONSE' });
