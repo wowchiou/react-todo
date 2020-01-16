@@ -7,7 +7,7 @@ const Navigation = () => {
   return (
     <ul className={styles.Navigation}>
       <NavItem link="/" exact>
-        TO DO
+        TODO
       </NavItem>
       <NavItem link="/done">Done</NavItem>
     </ul>

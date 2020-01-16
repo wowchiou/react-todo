@@ -166,6 +166,7 @@ const Signup = props => {
           {httpStatus.error}
         </Modal>
       )}
+
       <div className={styles.wrap}>
         <Card className={styles.card}>
           <div className={styles.title}>

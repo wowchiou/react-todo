@@ -1,0 +1,22 @@
+.Todo {
+  max-width: 500px;
+  width: 90%;
+  margin: auto;
+
+  h2 {
+    margin: 10px 0;
+    font-size: 20px;
+    color: #fff;
+  }
+
+  .addBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+
+    button {
+      margin-left: 10px;
+    }
+  }
+}

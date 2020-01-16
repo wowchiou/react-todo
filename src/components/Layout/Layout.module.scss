@@ -1,9 +1,15 @@
 .header {
   position: relative;
+  border-bottom: 3px solid #fff;
 }
+
 .logout {
   position: absolute;
   top: 50%;
   right: 10px;
   transform: translate(0, -50%);
+
+  button {
+    border: none;
+  }
 }

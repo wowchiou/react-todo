@@ -27,16 +27,20 @@
 /*webkit瀏覽器專用*/
 ::-webkit-input-placeholder {
   color: rgba(255, 255, 255, 0.8);
+  font-family: 'Noto Sans TC', sans-serif;
 }
 /*Firefox 4-18瀏覽器專用*/
 input::-moz-placeholder {
   color: rgba(255, 255, 255, 0.8);
+  font-family: 'Noto Sans TC', sans-serif;
 }
 /*Firefox 19+瀏覽器專用*/
 input::-moz-placeholder {
   color: rgba(255, 255, 255, 0.8);
+  font-family: 'Noto Sans TC', sans-serif;
 }
 /*IE10瀏覽器專用*/
 :-ms-input-placeholder {
   color: rgba(255, 255, 255, 0.8);
+  font-family: 'Noto Sans TC', sans-serif;
 }

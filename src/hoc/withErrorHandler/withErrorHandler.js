@@ -11,10 +11,17 @@ const withErrorHandler = (WrappedComponents, axios) => {
     let classes = [styles.error];
     error ? classes.push(styles.show) : classes.push(styles.hide);
 
+    let errorMessage = '';
+    if (error && error.response) {
+      errorMessage = error.response.data.error.message;
+    } else if (error && !error.response) {
+      errorMessage = '請確認網路連線';
+    }
+
     return (
       <>
         <div className={classes.join(' ')}>
-          <p>{error && error.response.data.error.message}</p>
+          <p>{errorMessage}</p>
           <Button clicked={clearError}>確認</Button>
         </div>
         <WrappedComponents {...props} />

@@ -9,6 +9,7 @@ const Modal = props => {
 
   const modal = (
     <>
+      {console.log(props.show)}
       <Backdrop show={props.show} clicked={props.clicked} />
       <div className={styles.Modal}>
         <div className={styles.close} onClick={props.clicked}>

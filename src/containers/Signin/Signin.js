@@ -79,7 +79,6 @@ const Signin = props => {
     }
 
     const data = getFormValue(formData);
-
     const signinResponse = await signinInstance(data);
 
     if (signinResponse) {
@@ -138,6 +137,7 @@ const Signin = props => {
           {httpStatus.error}
         </Modal>
       )}
+
       <div className={styles.wrap}>
         <Card className={styles.card}>
           <div className={styles.title}>
