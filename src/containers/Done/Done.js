@@ -3,11 +3,7 @@ import Layout from '../../components/Layout/Layout';
 
 const Done = () => {
   console.log('Done');
-  return (
-    <div>
-      <Layout>Done</Layout>
-    </div>
-  );
+  return <Layout>Done</Layout>;
 };
 
 export default Done;

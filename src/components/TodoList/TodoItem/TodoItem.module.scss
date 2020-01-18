@@ -1,0 +1,22 @@
+.TodoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #fff;
+  }
+
+  p {
+    font-size: 18px;
+    color: #fff;
+    flex: 1;
+  }
+
+  .btns {
+    button + button {
+      margin-left: 10px;
+    }
+  }
+}
