@@ -1,6 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Todo.module.scss';
-import { todoInstence as axios } from '../../axios-instence';
+import {
+  ajaxBaseUrl as axios,
+  ajaxGetTodoList,
+  ajaxAddTodoItem,
+  ajaxUpdateTodoItemDone,
+  ajaxDeleteTodoItem
+} from '../../shared/service';
 
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Layout from '../../components/Layout/Layout';
@@ -9,8 +15,7 @@ import Button from '../../UI/Button/Button';
 import TodoList from '../../components/TodoList/TodoList';
 import Loading from '../../UI/Loading/Loading';
 
-const Todo = props => {
-  console.log('Todo');
+const Todo = () => {
   const [addTodoItem, setAddTodoItem] = useState('');
   const [todoList, setTodoList] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,14 +24,14 @@ const Todo = props => {
     setAddTodoItem(e.target.value);
   };
 
-  const addTodoItemHandler = () => {
-    setLoading(true);
-    const todoItem = {
-      item: addTodoItem,
-      isDone: false
-    };
-
-    axios.post('/todo/wowchiou.json', todoItem).then(res => {
+  const addTodoItemHandler = async () => {
+    try {
+      setLoading(true);
+      const todoItem = {
+        item: addTodoItem,
+        isDone: false
+      };
+      const res = await ajaxAddTodoItem(todoItem);
       setTodoList(prevState => {
         return {
           ...prevState,
@@ -35,28 +40,30 @@ const Todo = props => {
           }
         };
       });
-
       setAddTodoItem('');
       setLoading(false);
-    });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
-  const onFinished = id => {
-    setLoading(true);
-    const _todoList = todoList;
-    const updateValue = Object.keys(_todoList)
-      .map(itm => {
-        if (itm === id) return _todoList[itm];
-      })
-      .reduce((obj, el) => {
-        return {
-          ...obj,
-          ...el,
-          isDone: true
-        };
-      }, {});
-
-    axios.put(`/todo/wowchiou/${id}.json`, updateValue).then(res => {
+  const onFinished = async id => {
+    try {
+      setLoading(true);
+      const _todoList = todoList;
+      const updateValue = Object.keys(_todoList)
+        .map(itm => {
+          if (itm === id) return _todoList[itm];
+        })
+        .reduce((obj, el) => {
+          return {
+            ...obj,
+            ...el,
+            isDone: true
+          };
+        }, {});
+      await ajaxUpdateTodoItemDone(id, updateValue);
       setTodoList(prevState => {
         return {
           ...prevState,
@@ -66,12 +73,16 @@ const Todo = props => {
         };
       });
       setLoading(false);
-    });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
-  const onDeleted = id => {
-    setLoading(true);
-    axios.delete(`/todo/wowchiou/${id}.json`).then(res => {
+  const onDeleted = async id => {
+    try {
+      setLoading(true);
+      await ajaxDeleteTodoItem(id);
       const updateList = Object.keys(todoList)
         .map(itm => {
           if (itm !== id) return { [itm]: { ...todoList[itm] } };
@@ -84,15 +95,26 @@ const Todo = props => {
         }, {});
       setTodoList({ ...updateList });
       setLoading(false);
-    });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const fetchTodoList = async () => {
+    try {
+      setLoading(true);
+      const res = await ajaxGetTodoList();
+      setTodoList(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    setLoading(true);
-    axios.get('/todo/wowchiou.json').then(res => {
-      setTodoList(res.data);
-      setLoading(false);
-    });
+    fetchTodoList();
   }, []);
 
   return (
@@ -119,6 +141,7 @@ const Todo = props => {
           list={todoList}
           onFinished={onFinished}
           onDeleted={onDeleted}
+          done={false}
         />
       </div>
     </Layout>

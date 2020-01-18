@@ -2,7 +2,7 @@ import React, { useState, useReducer, useCallback } from 'react';
 import styles from './Signin.module.scss';
 
 import axios from 'axios';
-import { signinInstance } from '../../axios-instence';
+import { ajaxSignIn } from '../../shared/service';
 
 import { updateOBJ, checkValidity } from '../../shared/utility';
 import { httpReducer } from '../../shared/reducer';
@@ -17,8 +17,6 @@ import Loading from '../../UI/Loading/Loading';
 import SignForm from '../../components/SignForm/SignForm';
 
 const Signin = props => {
-  console.log('SIGNIN');
-
   const [httpStatus, dispatchHttpStatus] = useReducer(httpReducer, {
     loading: false,
     error: null
@@ -79,11 +77,15 @@ const Signin = props => {
     }
 
     const data = getFormValue(formData);
-    const signinResponse = await signinInstance(data);
+    const signinResponse = await ajaxSignIn(data);
 
     if (signinResponse) {
       if (signinOk(signinResponse)) {
-        login(signinResponse.data.idToken);
+        const responseData = {
+          idToken: signinResponse.data.idToken,
+          userId: signinResponse.data.localId
+        };
+        login(responseData);
       } else {
         dispatchHttpStatus({
           type: 'ERROR',
@@ -120,8 +122,9 @@ const Signin = props => {
       return result;
     }
 
-    function login(token) {
-      localStorage.setItem('idToken', token);
+    function login(data) {
+      localStorage.setItem('idToken', data.idToken);
+      localStorage.setItem('userId', data.userId);
       props.history.push('/');
     }
   };

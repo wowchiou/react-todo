@@ -7,8 +7,6 @@ import Signup from './containers/Signup/Signup';
 import Signin from './containers/Signin/Signin';
 
 const App = () => {
-  console.log('APP');
-
   return (
     <div>
       <Switch>

@@ -2,8 +2,6 @@ import React from 'react';
 import styles from './Input.module.scss';
 
 const Input = props => {
-  console.log('Input');
-
   const classes = [styles.Input];
   !props.valid && props.touch && classes.push(styles.error);
 

@@ -2,7 +2,7 @@ import React, { useState, useReducer, useCallback } from 'react';
 import styles from './Signup.module.scss';
 
 import axios from 'axios';
-import { signupInstance } from '../../axios-instence';
+import { ajaxSignUp } from '../../shared/service';
 
 import { updateOBJ, checkValidity } from '../../shared/utility';
 import { httpReducer } from '../../shared/reducer';
@@ -17,8 +17,6 @@ import Loading from '../../UI/Loading/Loading';
 import SignForm from '../../components/SignForm/SignForm';
 
 const Signup = props => {
-  console.log('SIGNUP');
-
   const [httpStatus, dispatchHttpStatus] = useReducer(httpReducer, {
     loading: false,
     error: null
@@ -103,7 +101,7 @@ const Signup = props => {
 
       const data = getFormValue(formData);
 
-      const signupResponse = await signupInstance(data);
+      const signupResponse = await ajaxSignUp(data);
 
       if (signupResponse) {
         if (signupOk(signupResponse)) {

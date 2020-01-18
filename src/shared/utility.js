@@ -28,3 +28,9 @@ export const checkValidity = (value, rules) => {
 
   return true;
 };
+
+export const logOut = props => {
+  localStorage.removeItem('idToken');
+  localStorage.removeItem('userId');
+  props.history.push('/signin');
+};

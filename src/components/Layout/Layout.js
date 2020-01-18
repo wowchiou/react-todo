@@ -6,9 +6,9 @@ import Navigation from '../Navigation/Navigation';
 import Button from '../../UI/Button/Button';
 
 const Layout = props => {
-  console.log('layout');
   const logOutHandler = () => {
     localStorage.removeItem('idToken');
+    localStorage.removeItem('userId');
     props.history.push('/signin');
   };
 

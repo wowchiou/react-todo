@@ -8,7 +8,7 @@ const TodoList = props => {
 
   if (props.list) {
     _list = Object.keys(props.list).map(itm => {
-      if (!props.list[itm].isDone) {
+      if (props.list[itm].isDone === props.done) {
         return (
           <TodoItem
             itemId={itm}
@@ -16,6 +16,8 @@ const TodoList = props => {
             item={props.list[itm].item}
             onFinished={props.onFinished}
             onDeleted={props.onDeleted}
+            onCanceled={props.onCanceled}
+            done={props.done}
           />
         );
       }
