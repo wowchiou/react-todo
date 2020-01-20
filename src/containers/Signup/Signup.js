@@ -1,26 +1,20 @@
-import React, { useState, useReducer, useCallback } from 'react';
+import React, { useState } from 'react';
 import styles from './Signup.module.scss';
-
 import axios from 'axios';
-import { ajaxSignUp } from '../../shared/service';
-
 import { updateOBJ, checkValidity } from '../../shared/utility';
-import { httpReducer } from '../../shared/reducer';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import * as actions from '../../store/actions/index';
 
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-
 import Button from '../../UI/Button/Button';
 import Card from '../../UI/Card/Card';
 import Modal from '../../UI/Modal/Modal';
 import Loading from '../../UI/Loading/Loading';
-
 import SignForm from '../../components/SignForm/SignForm';
 
 const Signup = props => {
-  const [httpStatus, dispatchHttpStatus] = useReducer(httpReducer, {
-    loading: false,
-    error: null
-  });
+  const { loading, error, clearAuthError, onSignUp, authRedirectPath } = props;
 
   const [signupFormData, setSignupFormData] = useState({
     email: {
@@ -67,7 +61,7 @@ const Signup = props => {
     }
   });
 
-  const changeHandler = useCallback((ev, type) => {
+  const changeHandler = (ev, type) => {
     const val = ev.currentTarget.value;
     setSignupFormData(prevState => {
       const updatedData = updateOBJ(prevState[type], {
@@ -77,91 +71,15 @@ const Signup = props => {
       });
       return updateOBJ(prevState, { [type]: updatedData });
     });
-  }, []);
-
-  const signupHandler = useCallback(
-    async formData => {
-      dispatchHttpStatus({ type: 'SEND' });
-
-      if (!checkIsFormOk(formData)) {
-        dispatchHttpStatus({
-          type: 'ERROR',
-          errorMessage: '填入資料不正確,請檢查後再發送'
-        });
-        return;
-      }
-
-      if (!passwordHasSameValue(formData)) {
-        dispatchHttpStatus({
-          type: 'ERROR',
-          errorMessage: '密碼不一致,請重新輸入後再發送'
-        });
-        return;
-      }
-
-      const data = getFormValue(formData);
-
-      const signupResponse = await ajaxSignUp(data);
-
-      if (signupResponse) {
-        if (signupOk(signupResponse)) {
-          props.history.push('/signin');
-        } else {
-          dispatchHttpStatus({ type: 'ERROR', errorMessage: '寫入資料失敗' });
-          console.log(signupResponse);
-        }
-      }
-
-      dispatchHttpStatus({ type: 'RESPONSE' });
-
-      function getFormValue(formList) {
-        const result = Object.keys(formList)
-          .map(itm => {
-            if (itm === 'email' || itm === 'password') {
-              return { [itm]: formList[itm].value };
-            } else {
-              return {};
-            }
-          })
-          .reduce((obj, el) => {
-            return { ...obj, ...el };
-          }, {});
-
-        return result;
-      }
-
-      function signupOk(res) {
-        return res.status === '200' || res.status === 200;
-      }
-
-      function checkIsFormOk(data) {
-        let result = false;
-        const validData = Object.keys(data).filter(
-          itm => data[itm].valid === false
-        );
-        if (validData.length === 0) {
-          result = true;
-        }
-
-        return result;
-      }
-
-      function passwordHasSameValue(data) {
-        return data.password.value === data.comfirnPsw.value;
-      }
-    },
-    [props.history]
-  );
-
-  const clearModal = useCallback(() => {
-    dispatchHttpStatus({ type: 'CLEAR' });
-  }, []);
+  };
 
   return (
     <div className={styles.Signup}>
-      {httpStatus.error && (
-        <Modal show clicked={clearModal}>
-          {httpStatus.error}
+      {authRedirectPath !== '/' && <Redirect to={authRedirectPath} />}
+
+      {error && (
+        <Modal show clicked={clearAuthError}>
+          {error}
         </Modal>
       )}
 
@@ -169,15 +87,13 @@ const Signup = props => {
         <Card className={styles.card}>
           <div className={styles.title}>
             <span>註冊</span>
-            <div className={styles.loading}>
-              {httpStatus.loading && <Loading />}
-            </div>
+            <div className={styles.loading}>{loading && <Loading />}</div>
           </div>
           <div>
             <SignForm data={signupFormData} changed={changeHandler} />
           </div>
           <div className={styles.btns}>
-            <Button clicked={() => signupHandler(signupFormData)}>送出</Button>
+            <Button clicked={() => onSignUp(signupFormData)}>送出</Button>
             <Button clicked={() => props.history.push('/signin')}>登入</Button>
           </div>
         </Card>
@@ -186,4 +102,22 @@ const Signup = props => {
   );
 };
 
-export default withErrorHandler(Signup, axios);
+const mapStateToProps = state => {
+  return {
+    loading: state.auth.loading,
+    error: state.auth.error,
+    authRedirectPath: state.auth.authRedirectPath
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onSignUp: data => dispatch(actions.onSignUp(data)),
+    clearAuthError: () => dispatch(actions.clearAuthError())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(Signup, axios));

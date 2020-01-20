@@ -25,6 +25,8 @@ const Todo = () => {
   };
 
   const addTodoItemHandler = async () => {
+    if (addTodoItem.trim() === '') return;
+
     try {
       setLoading(true);
       const todoItem = {

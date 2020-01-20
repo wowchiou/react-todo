@@ -1,28 +1,29 @@
-import React, { useState, useReducer, useCallback } from 'react';
+import React, { useState } from 'react';
 import styles from './Signin.module.scss';
-
 import axios from 'axios';
-import { ajaxSignIn } from '../../shared/service';
-
 import { updateOBJ, checkValidity } from '../../shared/utility';
-import { httpReducer } from '../../shared/reducer';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
+import { Redirect } from 'react-router-dom';
 
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-
 import Button from '../../UI/Button/Button';
 import Card from '../../UI/Card/Card';
 import Modal from '../../UI/Modal/Modal';
 import Loading from '../../UI/Loading/Loading';
-
 import SignForm from '../../components/SignForm/SignForm';
 
 const Signin = props => {
-  const [httpStatus, dispatchHttpStatus] = useReducer(httpReducer, {
-    loading: false,
-    error: null
-  });
+  const {
+    isLogIn,
+    loading,
+    error,
+    onLogin,
+    clearAuthError,
+    authRedirectPath
+  } = props;
 
-  const [signinFormData, setSigninFormData] = useState({
+  const [signInFormData, setSignInFormData] = useState({
     email: {
       type: 'input',
       inputType: 'email',
@@ -53,9 +54,9 @@ const Signin = props => {
     }
   });
 
-  const changeHandler = (ev, type) => {
-    const val = ev.currentTarget.value;
-    setSigninFormData(prevState => {
+  const changeHandler = (e, type) => {
+    const val = e.currentTarget.value;
+    setSignInFormData(prevState => {
       const updatedData = updateOBJ(prevState[type], {
         value: val,
         valid: checkValidity(val, prevState[type].validRules),
@@ -65,79 +66,13 @@ const Signin = props => {
     });
   };
 
-  const signinHandler = async formData => {
-    dispatchHttpStatus({ type: 'SEND' });
-
-    if (!checkIsFormOk(formData)) {
-      dispatchHttpStatus({
-        type: 'ERROR',
-        errorMessage: '填入資料不正確,請檢查後再發送'
-      });
-      return;
-    }
-
-    const data = getFormValue(formData);
-    const signinResponse = await ajaxSignIn(data);
-
-    if (signinResponse) {
-      if (signinOk(signinResponse)) {
-        const responseData = {
-          idToken: signinResponse.data.idToken,
-          userId: signinResponse.data.localId
-        };
-        login(responseData);
-      } else {
-        dispatchHttpStatus({
-          type: 'ERROR',
-          errorMessage: '登入失敗'
-        });
-      }
-    }
-
-    dispatchHttpStatus({ type: 'RESPONSE' });
-
-    function getFormValue(formList) {
-      const result = Object.keys(formList)
-        .map(itm => {
-          return { [itm]: formList[itm].value };
-        })
-        .reduce((obj, el) => {
-          return { ...obj, ...el };
-        }, {});
-      return result;
-    }
-
-    function signinOk(res) {
-      return res.status === '200' || res.status === 200;
-    }
-
-    function checkIsFormOk(data) {
-      let result = false;
-      const validData = Object.keys(data).filter(
-        itm => data[itm].valid === false
-      );
-      if (validData.length === 0) {
-        result = true;
-      }
-      return result;
-    }
-
-    function login(data) {
-      localStorage.setItem('idToken', data.idToken);
-      localStorage.setItem('userId', data.userId);
-      props.history.push('/');
-    }
-  };
-
-  const clearModal = useCallback(() => {
-    dispatchHttpStatus({ type: 'CLEAR' });
-  }, []);
-
   return (
     <div className={styles.Signin}>
-      {httpStatus.error && (
-        <Modal show clicked={clearModal}>
-          {httpStatus.error}
+      {isLogIn && <Redirect to={authRedirectPath} />}
+
+      {error && (
+        <Modal show clicked={clearAuthError}>
+          {error}
         </Modal>
       )}
 
@@ -145,15 +80,13 @@ const Signin = props => {
         <Card className={styles.card}>
           <div className={styles.title}>
             <span>登入</span>
-            <div className={styles.loading}>
-              {httpStatus.loading && <Loading />}
-            </div>
+            <div className={styles.loading}>{loading && <Loading />}</div>
           </div>
           <div>
-            <SignForm data={signinFormData} changed={changeHandler} />
+            <SignForm data={signInFormData} changed={changeHandler} />
           </div>
           <div className={styles.btns}>
-            <Button clicked={() => signinHandler(signinFormData)}>送出</Button>
+            <Button clicked={() => onLogin(signInFormData)}>送出</Button>
             <Button clicked={() => props.history.push('/signup')}>註冊</Button>
           </div>
         </Card>
@@ -162,4 +95,23 @@ const Signin = props => {
   );
 };
 
-export default withErrorHandler(Signin, axios);
+const mapStateToProps = state => {
+  return {
+    isLogIn: state.auth.tokenId !== null,
+    loading: state.auth.loading,
+    error: state.auth.error,
+    authRedirectPath: state.auth.authRedirectPAth
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogin: data => dispatch(actions.onLogin(data)),
+    clearAuthError: () => dispatch(actions.clearAuthError())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(Signin, axios));
