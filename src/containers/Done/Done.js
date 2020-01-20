@@ -32,7 +32,7 @@ const Done = () => {
           };
         }, {});
 
-      const res = await ajaxUpdateTodoItemDone(id, updateValue);
+      await ajaxUpdateTodoItemDone(id, updateValue);
       setTodoList(prevState => {
         return {
           ...prevState,
@@ -51,7 +51,7 @@ const Done = () => {
   const onDeleted = async id => {
     try {
       setLoading(true);
-      const res = await ajaxDeleteTodoItem(id);
+      await ajaxDeleteTodoItem(id);
       const updateList = Object.keys(todoList)
         .map(itm => {
           if (itm !== id) return { [itm]: { ...todoList[itm] } };

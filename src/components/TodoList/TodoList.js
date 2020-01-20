@@ -4,12 +4,14 @@ import styles from './TodoList.module.scss';
 import TodoItem from './TodoItem/TodoItem';
 
 const TodoList = props => {
-  let _list = <li className={styles.nothing}>目前無代辦事項</li>;
+  const defaultTag = <li className={styles.nothing}>目前無代辦事項</li>;
+  let listTag = defaultTag;
 
   if (props.list) {
-    _list = Object.keys(props.list).map(itm => {
+    listTag = Object.keys(props.list).map(itm => {
+      let todoItem = false;
       if (props.list[itm].isDone === props.done) {
-        return (
+        todoItem = (
           <TodoItem
             itemId={itm}
             key={itm}
@@ -21,10 +23,17 @@ const TodoList = props => {
           />
         );
       }
+      return todoItem;
     });
+
+    // 如果list無資料顯示預設文字
+    const listTagLength = listTag.filter(itm => itm).length;
+    if (listTagLength === 0) {
+      listTag = defaultTag;
+    }
   }
 
-  return <ul className={styles.TodoList}>{_list}</ul>;
+  return <ul className={styles.TodoList}>{listTag}</ul>;
 };
 
 export default TodoList;
