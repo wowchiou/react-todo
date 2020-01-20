@@ -39,7 +39,8 @@ export default function(state = initState, action) {
     case actionTypes.AUTH_CLEAR_ERROR:
       return {
         ...state,
-        error: null
+        error: null,
+        loading: false
       };
     case actionTypes.AUTH_REDIRECT_PATH:
       return {
