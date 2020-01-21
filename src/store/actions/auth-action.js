@@ -1,51 +1,60 @@
 import { ajaxSignIn, ajaxSignUp } from '../../shared/service';
 import * as actionTypes from '../actionTypes';
 
-export const authStart = () => {
-  return {
-    type: actionTypes.AUTH_START
-  };
-};
-
-export const authSuccess = (tokenId, userId) => {
-  return {
-    type: actionTypes.AUTH_SUCCESS,
-    tokenId: tokenId,
-    userId: userId
-  };
-};
-
-export const authFail = errorMessage => {
-  return {
-    type: actionTypes.AUTH_FAIL,
-    errorMessage: errorMessage
-  };
-};
-
-export const authLogout = () => {
-  return {
-    type: actionTypes.AUTH_LOGOUT
-  };
+export const authActions = {
+  start: () => {
+    return {
+      type: actionTypes.AUTH_START
+    };
+  },
+  success: (tokenId, userId) => {
+    return {
+      type: actionTypes.AUTH_SUCCESS,
+      tokenId: tokenId,
+      userId: userId
+    };
+  },
+  fail: errorMessage => {
+    return {
+      type: actionTypes.AUTH_FAIL,
+      errorMessage: errorMessage
+    };
+  },
+  logout: () => {
+    return {
+      type: actionTypes.AUTH_LOGOUT
+    };
+  },
+  clearAuthError: () => {
+    return {
+      type: actionTypes.AUTH_CLEAR_ERROR
+    };
+  },
+  setAuthRedirectAuth: path => {
+    return {
+      type: actionTypes.AUTH_REDIRECT_PATH,
+      path: path
+    };
+  }
 };
 
 export const clearAuthError = () => {
-  return {
-    type: actionTypes.AUTH_CLEAR_ERROR
+  return dispatch => {
+    dispatch(authActions.clearAuthError());
   };
 };
 
 export const setAuthRedirectAuth = path => {
-  return {
-    type: actionTypes.AUTH_REDIRECT_PATH,
-    path: path
+  return dispatch => {
+    dispatch(authActions.setAuthRedirectAuth(path));
   };
 };
 
 export const onLogin = formData => {
   return async dispatch => {
-    dispatch(authStart());
+    dispatch(authActions.start());
     if (!checkIsFormOk(formData)) {
-      return dispatch(authFail('填入資料不正確,請檢查後再發送'));
+      return dispatch(authActions.fail('填入資料不正確,請檢查後再發送'));
     }
     try {
       const data = getFormValue(formData);
@@ -57,42 +66,42 @@ export const onLogin = formData => {
 
           localStorage.setItem('idToken', tokenId);
           localStorage.setItem('userId', userId);
-          dispatch(setAuthRedirectAuth('/'));
-          dispatch(authSuccess(tokenId, userId));
+          dispatch(authActions.setAuthRedirectAuth('/'));
+          dispatch(authActions.success(tokenId, userId));
         }
       }
     } catch (error) {
-      dispatch(authFail('登入失敗'));
+      dispatch(authActions.fail('登入失敗'));
     }
   };
 };
 
 export const onSignUp = formData => {
   return async dispatch => {
-    dispatch(authStart());
+    dispatch(authActions.start());
     if (!checkIsFormOk(formData)) {
-      return dispatch(authFail('填入資料不正確,請檢查後再發送'));
+      return dispatch(authActions.fail('填入資料不正確,請檢查後再發送'));
     }
     if (!passwordHasSameValue(formData)) {
-      return dispatch(authFail('密碼不一致,請重新輸入後再發送'));
+      return dispatch(authActions.fail('密碼不一致,請重新輸入後再發送'));
     }
     try {
       const data = getFormValue(formData);
       const signupResponse = await ajaxSignUp(data);
       if (signupResponse) {
         if (signOk(signupResponse)) {
-          dispatch(setAuthRedirectAuth('/signin'));
+          dispatch(authActions.setAuthRedirectAuth('/signin'));
         }
       }
     } catch (error) {
-      return dispatch(authFail('寫入資料失敗'));
+      return dispatch(authActions.fail('寫入資料失敗'));
     }
   };
 };
 
 export const onLogOut = () => {
   return dispatch => {
-    dispatch(authLogout());
+    dispatch(authActions.logout());
     localStorage.removeItem('idToken');
     localStorage.removeItem('userId');
   };
