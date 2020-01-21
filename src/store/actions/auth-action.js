@@ -1,5 +1,5 @@
 import { ajaxSignIn, ajaxSignUp } from '../../shared/service';
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '../actionTypes';
 
 export const authStart = () => {
   return {
@@ -92,9 +92,9 @@ export const onSignUp = formData => {
 
 export const onLogOut = () => {
   return dispatch => {
+    dispatch(authLogout());
     localStorage.removeItem('idToken');
     localStorage.removeItem('userId');
-    dispatch(authLogout());
   };
 };
 

@@ -1,4 +1,4 @@
-import * as actionTypes from '../actions/actionTypes';
+import * as actionTypes from '../actionTypes';
 
 const initState = {
   tokenId: null,
@@ -8,7 +8,7 @@ const initState = {
   authRedirectPath: '/'
 };
 
-export default function(state = initState, action) {
+const authReducer = (state = initState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
       return {
@@ -34,7 +34,8 @@ export default function(state = initState, action) {
       return {
         ...state,
         tokenId: null,
-        userId: null
+        userId: null,
+        authRedirectPath: '/signin'
       };
     case actionTypes.AUTH_CLEAR_ERROR:
       return {
@@ -52,4 +53,6 @@ export default function(state = initState, action) {
     default:
       return state;
   }
-}
+};
+
+export default authReducer;

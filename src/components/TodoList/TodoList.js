@@ -1,25 +1,25 @@
 import React from 'react';
 import styles from './TodoList.module.scss';
-
 import TodoItem from './TodoItem/TodoItem';
 
 const TodoList = props => {
+  const { list, done, onCanceled, onFinished, onDeleted } = props;
+
   const defaultTag = <li className={styles.nothing}>目前無代辦事項</li>;
   let listTag = defaultTag;
 
-  if (props.list) {
-    listTag = Object.keys(props.list).map(itm => {
+  if (list) {
+    listTag = Object.keys(list).map(itm => {
       let todoItem = false;
-      if (props.list[itm].isDone === props.done) {
+      if (list[itm].isDone === done) {
         todoItem = (
           <TodoItem
-            itemId={itm}
             key={itm}
-            item={props.list[itm].item}
-            onFinished={props.onFinished}
-            onDeleted={props.onDeleted}
-            onCanceled={props.onCanceled}
-            done={props.done}
+            item={list[itm].item}
+            onFinished={() => onFinished(itm, list)}
+            onDeleted={() => onDeleted(itm, list)}
+            onCanceled={() => onCanceled(itm, list)}
+            done={done}
           />
         );
       }

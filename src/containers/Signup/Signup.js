@@ -13,6 +13,21 @@ import Modal from '../../UI/Modal/Modal';
 import Loading from '../../UI/Loading/Loading';
 import SignForm from '../../components/SignForm/SignForm';
 
+const mapStateToProps = state => {
+  return {
+    loading: state.auth.loading,
+    error: state.auth.error,
+    authRedirectPath: state.auth.authRedirectPath
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onSignUp: data => dispatch(actions.onSignUp(data)),
+    clearAuthError: () => dispatch(actions.clearAuthError())
+  };
+};
+
 const Signup = props => {
   const { loading, error, clearAuthError, onSignUp, authRedirectPath } = props;
 
@@ -100,21 +115,6 @@ const Signup = props => {
       </div>
     </div>
   );
-};
-
-const mapStateToProps = state => {
-  return {
-    loading: state.auth.loading,
-    error: state.auth.error,
-    authRedirectPath: state.auth.authRedirectPath
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onSignUp: data => dispatch(actions.onSignUp(data)),
-    clearAuthError: () => dispatch(actions.clearAuthError())
-  };
 };
 
 export default connect(

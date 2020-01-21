@@ -13,6 +13,22 @@ import Modal from '../../UI/Modal/Modal';
 import Loading from '../../UI/Loading/Loading';
 import SignForm from '../../components/SignForm/SignForm';
 
+const mapStateToProps = state => {
+  return {
+    isLogIn: state.auth.tokenId !== null,
+    loading: state.auth.loading,
+    error: state.auth.error,
+    authRedirectPath: state.auth.authRedirectPAth
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogin: data => dispatch(actions.onLogin(data)),
+    clearAuthError: () => dispatch(actions.clearAuthError())
+  };
+};
+
 const Signin = props => {
   const {
     isLogIn,
@@ -93,22 +109,6 @@ const Signin = props => {
       </div>
     </div>
   );
-};
-
-const mapStateToProps = state => {
-  return {
-    isLogIn: state.auth.tokenId !== null,
-    loading: state.auth.loading,
-    error: state.auth.error,
-    authRedirectPath: state.auth.authRedirectPAth
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onLogin: data => dispatch(actions.onLogin(data)),
-    clearAuthError: () => dispatch(actions.clearAuthError())
-  };
 };
 
 export default connect(

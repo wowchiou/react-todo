@@ -1,32 +1,44 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import styles from './Layout.module.scss';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
 
 import Navigation from '../Navigation/Navigation';
 import Button from '../../UI/Button/Button';
 
-const Layout = props => {
-  const logOutHandler = () => {
-    localStorage.removeItem('idToken');
-    localStorage.removeItem('userId');
-    props.history.push('/signin');
+const mapStateToProps = state => {
+  return {
+    isLogIn: state.auth.tokenId !== null
   };
+};
 
-  if (!localStorage.getItem('idToken')) {
-    props.history.push('/signin');
-  }
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogOut: () => dispatch(actions.onLogOut())
+  };
+};
+
+const Layout = props => {
+  const { onLogOut, children, isLogIn } = props;
 
   return (
     <>
       <header className={styles.header}>
         <Navigation />
         <div className={styles.logout}>
-          <Button clicked={logOutHandler}>登出</Button>
+          <Button clicked={onLogOut}>登出</Button>
         </div>
       </header>
-      <main>{props.children}</main>
+      <main>
+        {!isLogIn && <Redirect to="signin" />}
+        {children}
+      </main>
     </>
   );
 };
 
-export default withRouter(Layout);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(Layout));

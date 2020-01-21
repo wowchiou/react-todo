@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import authReducer from './store/reducers/auth-reducer';
+import todoReducer from './store/reducers/todo-reducer';
 import thunk from 'redux-thunk';
 
 // 使用redux devTool設定
@@ -16,7 +17,8 @@ const composeEnhancers =
     : null || compose;
 
 const rootReducer = combineReducers({
-  auth: authReducer
+  auth: authReducer,
+  todo: todoReducer
 });
 
 const store = createStore(

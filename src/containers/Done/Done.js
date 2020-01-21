@@ -1,93 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Done.module.scss';
-import {
-  ajaxBaseUrl as axios,
-  ajaxGetTodoList,
-  ajaxUpdateTodoItemDone,
-  ajaxDeleteTodoItem
-} from '../../shared/service';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
+import { ajaxBaseUrl as axios } from '../../shared/service';
 
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Layout from '../../components/Layout/Layout';
 import TodoList from '../../components/TodoList/TodoList';
 import Loading from '../../UI/Loading/Loading';
+import Modal from '../../UI/Modal/Modal';
 
-const Done = () => {
-  const [todoList, setTodoList] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const onCanceled = async id => {
-    try {
-      setLoading(true);
-      const _todoList = todoList;
-      const updateValue = Object.keys(_todoList)
-        .map(itm => {
-          if (itm === id) return _todoList[itm];
-        })
-        .reduce((obj, el) => {
-          return {
-            ...obj,
-            ...el,
-            isDone: false
-          };
-        }, {});
-
-      await ajaxUpdateTodoItemDone(id, updateValue);
-      setTodoList(prevState => {
-        return {
-          ...prevState,
-          [id]: {
-            ...updateValue
-          }
-        };
-      });
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
+const mapStateToProps = state => {
+  return {
+    todoList: state.todo.todoList,
+    loading: state.todo.loading,
+    error: state.todo.error
   };
+};
 
-  const onDeleted = async id => {
-    try {
-      setLoading(true);
-      await ajaxDeleteTodoItem(id);
-      const updateList = Object.keys(todoList)
-        .map(itm => {
-          if (itm !== id) return { [itm]: { ...todoList[itm] } };
-        })
-        .reduce((obj, el) => {
-          return {
-            ...obj,
-            ...el
-          };
-        }, {});
-      setTodoList({ ...updateList });
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchTodoList: () => dispatch(actions.fetchTodoList()),
+    onDeleted: (id, list) => dispatch(actions.onDeleted(id, list)),
+    onCanceled: (id, list) => dispatch(actions.onCanceled(id, list)),
+    clearError: () => dispatch(actions.clearError())
   };
+};
 
-  const fetchTodoList = async () => {
-    try {
-      setLoading(true);
-      const res = await ajaxGetTodoList();
-      setTodoList(res.data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+const Done = props => {
+  const {
+    todoList,
+    loading,
+    error,
+    fetchTodoList,
+    onDeleted,
+    onCanceled,
+    clearError
+  } = props;
 
   useEffect(() => {
     fetchTodoList();
-  }, []);
+  }, [fetchTodoList]);
 
   return (
     <Layout>
+      {error && (
+        <Modal show clicked={clearError}>
+          {error}
+        </Modal>
+      )}
       <div className={styles.Done}>
         <h2 className={styles.title}>
           已完成項目
@@ -104,4 +65,7 @@ const Done = () => {
   );
 };
 
-export default withErrorHandler(Done, axios);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(Done, axios));
